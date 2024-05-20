@@ -1,6 +1,8 @@
+// USERS
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { createUser, getUserByEmail } = require('../models/userModel');
+const { createUser, getUserByEmail } = require('../../models/Users/userModel');
 
 const register = async (req, res) => {
   try {
@@ -34,7 +36,6 @@ const register = async (req, res) => {
       country,
       rol_id: roleId,
     }); // Pasa los nuevos campos al método createUser
-
     res
       .status(201)
       .json({ message: `User registered successfully with id: ${newUserId}` });

@@ -1,4 +1,4 @@
-const { connection } = require('../config/database');
+const { connection } = require('../../config/database');
 
 const getUserByEmail = (email) => {
   const queryString = 'SELECT * FROM users WHERE email = ?';
