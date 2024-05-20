@@ -1,0 +1,17 @@
+# Register user
+@host = http://localhost:4000/api
+
+POST {{host}}/auth/register HTTP/1.1
+Content-Type: application/json; charset=utf-8
+
+{
+  "name": "Juan Pérez",
+  "email": "juan.perez@example.com",
+  "password": "contraseñaSegura123",
+  "lastName": "Pérez",
+  "number": "123490",
+  "address": "Calle Falsa 123",
+  "city": "Ciudad Ejemplo",
+  "country": "País Ejemplo",
+  "roleId": 1
+}
