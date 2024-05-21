@@ -18,7 +18,7 @@ const getProductByName = (name) => {
 
 const createProduct = ({ name, price, quantity, image, id_category }) => {
   const query =
-    'INSERT INTO users (name, price, quantity, image, id_category) VALUES (?, ?, ?, ?, ?)';
+    'INSERT INTO products (name, price, quantity, image, id_category) VALUES (?, ?, ?, ?, ?)';
 
   return new Promise((resolve, reject) => {
     connection.query(

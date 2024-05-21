@@ -1,5 +1,4 @@
 // USERS
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { createUser, getUserByEmail } = require('../../models/Users/userModel');
@@ -10,14 +9,13 @@ const register = async (req, res) => {
       name,
       email,
       password,
-      lastName,
+      last_name,
       number,
       address,
       city,
       country,
-      roleId,
+      rol_id,
     } = req.body; // Extrae los nuevos campos
-    console.log({ roleId });
 
     const user = await getUserByEmail(email); // No cambia esta línea
 
@@ -25,16 +23,19 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    console.log(hashedPassword)
     const newUserId = await createUser({
       name,
       email,
-      password,
-      last_name: lastName,
+      password : hashedPassword,
+      last_name,
       number,
       address,
       city,
       country,
-      rol_id: roleId,
+      rol_id,
     }); // Pasa los nuevos campos al método createUser
     res
       .status(201)
@@ -55,8 +56,9 @@ const login = async (req, res) => {
       console.log('Usuario no existe');
       return res.status(400).json({ message: 'Ese Usuario no existe' });
     }
-
     // Comparar contraseñas
+    console.log('Contraseña ingresada:', password);
+    console.log('Contraseña almacenada (hasheada):', user.password);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res
