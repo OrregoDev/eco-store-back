@@ -9,7 +9,7 @@ const getUserByEmail = (email) => {
         reject(err);
       }
 
-      console.log(`Getting user email by ${email}`, { result });
+      console.log(`Getting user by ${email}`, { result });
 
       resolve(result[0]);
     });

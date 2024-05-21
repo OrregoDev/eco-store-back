@@ -1,29 +1,29 @@
 const { connection } = require('../../config/database');
 
-const getProductByName = (name) => {
-  const queryString = 'SELECT * FROM products WHERE name = ?';
+const getArticleByTitle = (title) => {
+  const queryString = 'SELECT * FROM articles WHERE title = ?';
   return new Promise((resolve, reject) => {
-    connection.query(queryString, [name], (err, result) => {
+    connection.query(queryString, [title], (err, result) => {
       if (err) {
         console.error('Error from userModel.js', { err });
         reject(err);
       }
 
-      console.log(`Getting product by ${name}`, { result });
+      console.log(`Getting article by ${title}`, { result });
 
       resolve(result[0]);
     });
   });
 };
 
-const createProduct = ({ name, price, quantity, image, id_category }) => {
+const createArticle = ({ id_author, title, summary, content }) => {
   const query =
-    'INSERT INTO products (name, price, quantity, image, id_category) VALUES (?, ?, ?, ?, ?)';
+    'INSERT INTO products (id_author, title, summary, content) VALUES (?, ?, ?, ?)';
 
   return new Promise((resolve, reject) => {
     connection.query(
       query,
-      [name, price, quantity, image, id_category],
+      [id_author, title, summary, content],
       (err, result, fields) => {
         if (err) {
           console.error('Error from userModel.js', { err });
@@ -36,6 +36,6 @@ const createProduct = ({ name, price, quantity, image, id_category }) => {
 };
 
 module.exports = {
-  getProductByName,
-  createProduct,
+  getArticleByTitle,
+  createArticle,
 };
