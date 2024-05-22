@@ -95,7 +95,7 @@ const deleteProfile = async (req, res) => {
     const affectedRows = await deleteUser({ id });
     res
       .status(201)
-      .json({ message: `The row has been deleted: ${affectedRows}` });
+      .json({ message: `The user has been deleted: ${affectedRows}` });
   } catch (err) {}
 };
 
