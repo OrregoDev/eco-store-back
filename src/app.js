@@ -10,5 +10,9 @@ app.use(express.json());
 
 // Rutas
 app.use('/api/auth', authRoutes);
+app.get('/', (req, res) => {
+    console.log("getting here");
+    res.send("root is working")
+})
 
 module.exports = app;
