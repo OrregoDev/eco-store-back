@@ -98,7 +98,7 @@ const updateUser = ({
 
 const deleteUser = (userId) => {
   const query = 'DELETE FROM users WHERE id = ?';
-
+  console.log(userId);
   return new Promise((resolve, reject) => {
     connection.query(query, [userId], (err, result, fields) => {
       if (err) {

@@ -63,8 +63,8 @@ const updateProfile = async (req, res) => {
       city,
       country,
       rol_id,
-      id,
     } = req.body;
+    const { id } = req.params;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     console.log(hashedPassword);
@@ -91,8 +91,8 @@ const updateProfile = async (req, res) => {
 
 const deleteProfile = async (req, res) => {
   try {
-    const { id } = req.body;
-    const affectedRows = await deleteUser({ id });
+    const { id } = req.params;
+    const affectedRows = await deleteUser(id);
     res
       .status(201)
       .json({ message: `The user has been deleted: ${affectedRows}` });
@@ -113,6 +113,7 @@ const login = async (req, res) => {
     console.log('Contraseña ingresada:', password);
     console.log('Contraseña almacenada (hasheada):', user.password);
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch);
     if (!isMatch) {
       return res
         .status(400)

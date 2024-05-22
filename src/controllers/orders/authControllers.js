@@ -3,13 +3,13 @@ const { createOrder } = require('../../models/orders/orderModel');
 
 const register_order = async (req, res) => {
   try {
-    const { id_user, product_id, payment_method, adress } = req.body; // Extrae los nuevos campos
+    const { id_user, product_id, payment_method, address } = req.body; // Extrae los nuevos campos
 
     const newOrderId = await createOrder({
       id_user,
       product_id,
       payment_method,
-      adress,
+      address,
     }); // Pasa los nuevos campos al método createUser
     res.status(201).json({
       message: `Order registered successfully with id: ${newOrderId}`,

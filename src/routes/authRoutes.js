@@ -12,12 +12,21 @@ const { register_order } = require('../controllers/orders/authControllers');
 
 const router = express.Router();
 
-router.post('/deleteProfile', deleteProfile);
-router.post('/updateProfile', updateProfile);
+router.delete('/delete-profile/:id', deleteProfile);
+router.put('/update-profile/:id', updateProfile);
 router.post('/login', login);
 router.post('/register', register);
 router.post('/verify-token', verifyToken);
-router.post('/register_product', register_product);
-router.post('/register_order', register_order);
+router.post('/register-product', register_product);
+router.post('/register-order', register_order);
+
+router.get('/products');
+router.get('/products/:id');
+router.post('/products');
+router.put('/products/:id');
+router.delete('/products/:id');
+router.patch('/products/:id');
+
+router.get('/categories');
 
 module.exports = router;
