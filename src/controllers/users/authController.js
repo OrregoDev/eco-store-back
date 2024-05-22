@@ -5,9 +5,10 @@ const {
   getUserByEmail,
   updateUser,
   deleteUser,
-} = require('../../models/Users/userModel');
+  createUser,
+  getUserById,
+} = require("../../models/Users/userModel");
 
-const { createUser } = require('../../models/Users/userModel')
 
 const register = async (req, res) => {
   try {
@@ -56,6 +57,7 @@ const register = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
+    const { id } = req.params;
     const {
       name,
       email,
@@ -67,7 +69,11 @@ const updateProfile = async (req, res) => {
       country,
       rol_id,
     } = req.body;
-    const { id } = req.params;
+    const user = await getUserById(id);
+    if (!user) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     console.log(hashedPassword);
@@ -95,6 +101,13 @@ const updateProfile = async (req, res) => {
 const deleteProfile = async (req, res) => {
   try {
     const { id } = req.params;
+    const user = await getUserById(id)
+
+    if (!user) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    
     const affectedRows = await deleteUser(id);
     res
       .status(201)
@@ -107,7 +120,6 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     // Verificar si el usuario existe
     const user = await getUserByEmail(email);
-
     if (!user) {
       console.log('Usuario no existe');
       return res.status(400).json({ message: 'Ese Usuario no existe' });

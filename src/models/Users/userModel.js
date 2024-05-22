@@ -7,43 +7,12 @@ const getUserByEmail = async (email) => {
   return rows[0];
 };
 
-// const createUser = ({
-//   name,
-//   email,
-//   password,
-//   last_name,
-//   number,
-//   city,
-//   country,
-//   rol_id,
-//   address,
-// }) => {
-//   const query ='INSERT INTO users (name, email, password, last_name, number, city, country, rol_id, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-//   return new Promise((resolve, reject) => {
-//     poolmysql.query(
-//       query,
-//       [
-//         name,
-//         email,
-//         password,
-//         last_name,
-//         number,
-//         city,
-//         country,
-//         rol_id,
-//         address,
-//       ],
-//       (err, result, fields) => {
-//         if (err) {
-//           console.error('Error from userModel.js', { err });
-//           return reject(err);
-//         }
-//         resolve(result.insertId);
-//       }
-//     );
-//   });
-// };
-
+const getUserById = async (id) => {
+  const query = "SELECT * FROM users WHERE id = ?";
+  const values = [id];
+  const [rows] = await poolmysql.query(query, values);
+  return rows[0];
+};
 
 const createUser = async ({
   name,
@@ -143,5 +112,6 @@ module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
-  createUser
+  createUser,
+  getUserById
 };
