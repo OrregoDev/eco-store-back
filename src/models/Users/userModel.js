@@ -1,9 +1,9 @@
-const { connection } = require('../../config/database');
+const { pool : poolmysql } = require('../../config/database');
 
 const getUserByEmail = (email) => {
   const queryString = 'SELECT * FROM users WHERE email = ?';
   return new Promise((resolve, reject) => {
-    connection.query(queryString, [email], (err, result) => {
+    poolmysql.query(queryString, [email], (err, result) => {
       if (err) {
         console.error('Error from userModel.js', { err });
         reject(err);
@@ -16,7 +16,45 @@ const getUserByEmail = (email) => {
   });
 };
 
-const createUser = ({
+// const createUser = ({
+//   name,
+//   email,
+//   password,
+//   last_name,
+//   number,
+//   city,
+//   country,
+//   rol_id,
+//   address,
+// }) => {
+//   const query ='INSERT INTO users (name, email, password, last_name, number, city, country, rol_id, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+//   return new Promise((resolve, reject) => {
+//     poolmysql.query(
+//       query,
+//       [
+//         name,
+//         email,
+//         password,
+//         last_name,
+//         number,
+//         city,
+//         country,
+//         rol_id,
+//         address,
+//       ],
+//       (err, result, fields) => {
+//         if (err) {
+//           console.error('Error from userModel.js', { err });
+//           return reject(err);
+//         }
+//         resolve(result.insertId);
+//       }
+//     );
+//   });
+// };
+
+
+exports.createUser = async ({
   name,
   email,
   password,
@@ -27,32 +65,29 @@ const createUser = ({
   rol_id,
   address,
 }) => {
-  const query =
-    'INSERT INTO users (name, email, password, last_name, number, city, country, rol_id, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-
-  return new Promise((resolve, reject) => {
-    connection.query(
-      query,
-      [
-        name,
-        email,
-        password,
-        last_name,
-        number,
-        city,
-        country,
-        rol_id,
-        address,
-      ],
-      (err, result, fields) => {
-        if (err) {
-          console.error('Error from userModel.js', { err });
-          return reject(err);
-        }
-        resolve(result.insertId);
-      }
-    );
-  });
+  const query = 'INSERT INTO users (name, email, password, last_name, number, city, country, rol_id, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [name,email,password,last_name,number,city,country,rol_id,address,];
+  try {
+    // Ejecuta la consulta usando el pool
+    const [resp] = await poolmysql.query(query, values);
+    console.log('Resultados de la consulta:', resp.insertId);
+    return {
+      id: resp.insertId,
+      name,
+      email,
+      password,
+      last_name,
+      number,
+      city,
+      country,
+      rol_id,
+      address,
+    };
+  } catch (err) {
+    // Maneja el error adecuadamente
+    console.error('Error ejecutando la consulta:', err);
+    throw err;
+  }
 };
 
 const updateUser = ({
@@ -71,7 +106,7 @@ const updateUser = ({
     'UPDATE users SET name = ?, email = ?, password = ?, last_name = ?, number = ?, city = ?, country = ?, rol_id = ?, address = ? WHERE id = ?';
 
   return new Promise((resolve, reject) => {
-    connection.query(
+    poolmysql.query(
       query,
       [
         name,
@@ -100,7 +135,7 @@ const deleteUser = (userId) => {
   const query = 'DELETE FROM users WHERE id = ?';
   console.log(userId);
   return new Promise((resolve, reject) => {
-    connection.query(query, [userId], (err, result, fields) => {
+    poolmysql.query(query, [userId], (err, result, fields) => {
       if (err) {
         console.error('Error from userModel.js', { err });
         return reject(err);
@@ -113,7 +148,6 @@ const deleteUser = (userId) => {
 
 module.exports = {
   getUserByEmail,
-  createUser,
   updateUser,
   deleteUser,
 };
