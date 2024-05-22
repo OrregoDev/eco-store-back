@@ -1,7 +1,12 @@
 // USERS
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { createUser, getUserByEmail } = require('../../models/Users/userModel');
+const {
+  createUser,
+  getUserByEmail,
+  updateUser,
+  deleteUser,
+} = require('../../models/Users/userModel');
 
 const register = async (req, res) => {
   try {
@@ -46,6 +51,54 @@ const register = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      password,
+      last_name,
+      number,
+      address,
+      city,
+      country,
+      rol_id,
+      id,
+    } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    console.log(hashedPassword);
+    const affectedRows = await updateUser({
+      name,
+      email,
+      password: hashedPassword,
+      last_name,
+      number,
+      address,
+      city,
+      country,
+      rol_id,
+      id,
+    });
+    res
+      .status(201)
+      .json({ message: `row was successfully updated ${affectedRows}` });
+  } catch (err) {
+    console.error('Error en register:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+const deleteProfile = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const affectedRows = await deleteUser({ id });
+    res
+      .status(201)
+      .json({ message: `The row has been deleted: ${affectedRows}` });
+  } catch (err) {}
+};
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -73,7 +126,7 @@ const login = async (req, res) => {
 
     res.json({
       token,
-      user: { id: user.id, username: user.username, email: user.email },
+      user: { id: user.id, username: user.name, email: user.email },
     });
   } catch (err) {
     console.error('Error en login:', err);
@@ -116,4 +169,6 @@ module.exports = {
   register,
   login,
   verifyToken,
+  updateProfile,
+  deleteProfile,
 };
