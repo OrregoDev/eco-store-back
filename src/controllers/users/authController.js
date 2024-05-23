@@ -2,11 +2,13 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {
-  createUser,
   getUserByEmail,
   updateUser,
   deleteUser,
-} = require('../../models/Users/userModel');
+  createUser,
+  getUserById,
+} = require("../../models/Users/userModel");
+
 
 const register = async (req, res) => {
   try {
@@ -30,7 +32,6 @@ const register = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log(hashedPassword);
     const newUserId = await createUser({
       name,
       email,
@@ -42,9 +43,12 @@ const register = async (req, res) => {
       country,
       rol_id,
     }); // Pasa los nuevos campos al método createUser
+    if(!newUserId.id) {
+      return res.status(404).json({ message: 'Error al crear el usuario' });
+    }
     res
       .status(201)
-      .json({ message: `User registered successfully with id: ${newUserId}` });
+      .json({ message: `User registered successfully with id: ${newUserId.id}` });
   } catch (error) {
     console.error('Error en register:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -53,6 +57,7 @@ const register = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
+    const { id } = req.params;
     const {
       name,
       email,
@@ -64,7 +69,11 @@ const updateProfile = async (req, res) => {
       country,
       rol_id,
     } = req.body;
-    const { id } = req.params;
+    const user = await getUserById(id);
+    if (!user) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     console.log(hashedPassword);
@@ -92,6 +101,13 @@ const updateProfile = async (req, res) => {
 const deleteProfile = async (req, res) => {
   try {
     const { id } = req.params;
+    const user = await getUserById(id)
+
+    if (!user) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    
     const affectedRows = await deleteUser(id);
     res
       .status(201)
@@ -104,7 +120,6 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     // Verificar si el usuario existe
     const user = await getUserByEmail(email);
-    console.log(email, user);
     if (!user) {
       console.log('Usuario no existe');
       return res.status(400).json({ message: 'Ese Usuario no existe' });
@@ -121,7 +136,7 @@ const login = async (req, res) => {
     }
 
     // Generar token JWT
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, "my_secret", {
       expiresIn: '1h',
     });
 

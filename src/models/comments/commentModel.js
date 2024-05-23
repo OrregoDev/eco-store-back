@@ -1,11 +1,11 @@
-const { connection } = require('../../config/database');
+const { pool: poolmysql } = require("../../config/database");
 
 const getCommentByIdAuthor = (id_author) => {
-  const queryString = 'SELECT * FROM comments WHERE id_author = ?';
+  const queryString = "SELECT * FROM comments WHERE id_author = ?";
   return new Promise((resolve, reject) => {
-    connection.query(queryString, [id_author], (err, result) => {
+    poolmysql.query(queryString, [id_author], (err, result) => {
       if (err) {
-        console.error('Error from userModel.js', { err });
+        console.error("Error from userModel.js", { err });
         reject(err);
       }
 
@@ -18,15 +18,15 @@ const getCommentByIdAuthor = (id_author) => {
 
 const createComment = ({ id_author, title, content, id_article, approved }) => {
   const query =
-    'INSERT INTO products (id_author, title, content, id_article, approved) VALUES (?, ?, ?, ?, ?)';
+    "INSERT INTO products (id_author, title, content, id_article, approved) VALUES (?, ?, ?, ?, ?)";
 
   return new Promise((resolve, reject) => {
-    connection.query(
+    poolmysql.query(
       query,
       [id_author, title, content, id_article, approved],
       (err, result, fields) => {
         if (err) {
-          console.error('Error from userModel.js', { err });
+          console.error("Error from userModel.js", { err });
           return reject(err);
         }
         resolve(result.insertId);
