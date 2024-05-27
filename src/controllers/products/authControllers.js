@@ -2,7 +2,35 @@
 const{
   createProduct,
   getProductByName,
+  getProductByIdCategory
 } = require('../../models/products/productModel');
+const { pool: poolmysql } = require('../../config/database');
+
+const  getAllProducts = async (req, res) => {
+  try {
+    // Realizar la consulta a la base de datos
+    const [rows, fields] = await poolmysql.query('SELECT * FROM products');
+    // Enviar los resultados al frontend
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los productos:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+};
+
+const getProductsByIdCategory = async (req ,res) =>{
+  try {
+    const {id_category} = req.body;
+
+    const products = await getProductByIdCategory(id_category);
+
+    res.json(products)
+
+  } catch (error){
+    console.error('Error al obtener los productos:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+} 
 
 const register_product = async (req, res) => {
   try {
@@ -83,4 +111,14 @@ const deleteProfile = async (req, res) => {
       .status(201)
       .json({ message: `The user has been deleted: ${affectedRows}` });
   } catch (err) {}
+};
+
+
+module.exports = {
+  getAllProducts,
+  register_product,
+  updateProfile,
+  updateProfile,
+  deleteProfile,
+  getProductsByIdCategory
 };

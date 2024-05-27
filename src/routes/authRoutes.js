@@ -7,7 +7,7 @@ const {
   deleteProfile,
 } = require('../controllers/users/authController');
 
-const { register_product } = require('../controllers/products/authControllers')
+const { register_product,getAllProducts, getProductsByIdCategory} = require('../controllers/products/authControllers')
 const { register_order } = require('../controllers/orders/authControllers');
 
 const router = express.Router();
@@ -19,6 +19,8 @@ router.post('/register', register);
 router.post('/verify-token', verifyToken);
 router.post('/register-product', register_product);
 router.post('/register-order', register_order);
+router.get('/get-products', getAllProducts);
+router.get('/get-product-by-id-category', getProductsByIdCategory)
 
 
 router.get('/products');

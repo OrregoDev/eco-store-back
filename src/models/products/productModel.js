@@ -14,6 +14,13 @@ const getProductByName = (name) => {
   });
 };
 
+const getProductByIdCategory = async (id_category) => {
+  const query = "SELECT * FROM products WHERE id_category = ?"
+  const values = [id_category]
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
+};
+
 const createProduct = ({ name, price, quantity, image, id_category }) => {
   const query =
     "INSERT INTO products (name, price, quantity, image, id_category) VALUES (?, ?, ?, ?, ?)";
@@ -63,5 +70,6 @@ const updateProduct = ({ name, price, quantity, image, id_category }) => {
 module.exports = {
   getProductByName,
   createProduct,
-  updateProduct
+  updateProduct,
+  getProductByIdCategory
 };
