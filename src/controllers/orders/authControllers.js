@@ -4,7 +4,7 @@ const {
   getOrderById,
   updateOrder,
   deleteOrder,
-} = require('../../models/Orders/orderModel');
+} = require('../../models/orders/orderModel');
 
 const createOrderItem = async (req, res) => {
   try {

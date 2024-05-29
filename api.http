@@ -15,3 +15,5 @@ Content-Type: application/json; charset=utf-8
   "country": "País Ejemplo",
   "roleId": 1
 }
+
+GET http://localhost:4000/api/auth/search-products/cepillo

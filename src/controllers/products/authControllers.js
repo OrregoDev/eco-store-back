@@ -4,11 +4,51 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
-} = require('../../models/Products/productModel');
+  searchProduct
+} = require('../../models/products/productModel');
+
+const { pool: poolmysql } = require('../../config/database');
+
+
+const searchProducts = async (req ,res) => {
+  try {
+    const {name} = req.params;
+    const products = await searchProduct(name);
+    res.json(products)
+  }catch(err) {
+    console.error('Error al obtener los productos:', error);
+    res.status(500).send('Error interno del servidor');
+}}
+
+const  getAllProducts = async (req, res) => {
+  try {
+    // Realizar la consulta a la base de datos
+    const [rows, fields] = await poolmysql.query('SELECT * FROM products');
+    // Enviar los resultados al frontend
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los productos:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+};
+
+const getProductsByIdCategory = async (req ,res) =>{
+  try {
+    const {id_category} = req.body;
+
+    const products = await getProductByIdCategory(id_category);
+
+    res.json(products)
+
+  } catch (error){
+    console.error('Error al obtener los productos:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+} 
 
 const registerProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, category } = req.body;
+    const { name, price, quantity, image, id_category } = req.body;
 
     const product = await getProductByName(name);
 
@@ -17,11 +57,7 @@ const registerProduct = async (req, res) => {
     }
 
     const newProductId = await createProduct({
-      name,
-      description,
-      price,
-      stock,
-      category,
+      name, price, quantity, image, id_category
     });
 
     if (!newProductId.id) {
@@ -91,4 +127,7 @@ module.exports = {
   registerProduct,
   updateProductDetails,
   deleteProductDetails,
+  getAllProducts,
+  getProductsByIdCategory,
+  searchProducts
 };
