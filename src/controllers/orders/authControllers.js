@@ -2,7 +2,6 @@
 const {
   createOrder,
   getOrderById,
-  updateOrder,
   deleteOrder,
 } = require('../../models/orders/orderModel');
 
@@ -46,23 +45,37 @@ const getOrderDetails = async (req, res) => {
   }
 };
 
-const updateOrderStatus = async (req, res) => {
+const updateOrderDetails = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { id_user, product_id, payment_method, address } = req.body;
 
-    const updatedOrder = await updateOrder({ id, status });
+    const order = await getOrderById(id);
 
-    if (!updatedOrder) {
+    if (!order) {
+      return res.status(404).json({ message: 'Pedido no encontrado' });
+    }
+
+    // Preparar los cambios a aplicar
+    const changes = {};
+    if (id_user) changes.userId = id_user;
+    if (product_id) changes.items = [{ productId: product_id }];
+    if (payment_method) changes.paymentMethod = payment_method;
+    if (address) changes.deliveryAddress = address;
+
+    // Actualizar el pedido con los cambios
+    const updatedOrder = await Order.updateOne({ _id: id }, { $set: changes });
+
+    if (!updatedOrder.matchedCount) {
       return res.status(404).json({ message: 'Pedido no encontrado' });
     }
 
     res.status(200).json({
-      message: `Estado del pedido actualizado exitosamente`,
+      message: `Detalles del pedido actualizados exitosamente`,
       order: updatedOrder,
     });
   } catch (error) {
-    console.error('Error en updateOrderStatus:', error);
+    console.error('Error en updateOrderDetails:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
@@ -87,6 +100,6 @@ const deleteOrderItem = async (req, res) => {
 module.exports = {
   createOrderItem,
   getOrderDetails,
-  updateOrderStatus,
   deleteOrderItem,
+  updateOrderDetails,
 };

@@ -1,23 +1,29 @@
-const { pool: poolmysql } = require("../../config/database");
+const { pool: poolmysql } = require('../../config/database');
 
-const createOrder = ({ id_user, product_id, payment_method, address }) => {
+const createOrder = async (id_user, product_id, payment_method, address) => {
   const query =
-    "INSERT INTO orders (id_user, product_id, payment_method, address) VALUES (?, ?, ?, ?)";
-  return new Promise((resolve, reject) => {
-    poolmysql.query(
-      query,
-      [id_user, product_id, payment_method, address],
-      (err, result, fields) => {
-        if (err) {
-          console.error("Error from userModel.js", { err });
-          return reject(err);
-        }
-        resolve(result.insertId);
-      }
-    );
-  });
+    'INSERT INTO orders (id_user, product_id, payment_method, address) VALUES (?, ?, ?, ?)';
+  const values = [id_user, product_id, payment_method, address];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
+};
+
+const getOrderById = async (id) => {
+  const query = 'SELECT * FROM orders WHERE id = ?';
+  const values = [id];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
+};
+
+const deleteOrder = async (id) => {
+  const query = 'DELETE FROM orders WHERE id = ?';
+  const values = [id];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
 };
 
 module.exports = {
   createOrder,
+  getOrderById,
+  deleteOrder,
 };

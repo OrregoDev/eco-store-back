@@ -1,41 +1,35 @@
-const { pool: poolmysql } = require("../../config/database");
+const { pool: poolmysql } = require('../../config/database');
 
-const getCommentByIdAuthor = (id_author) => {
-  const queryString = "SELECT * FROM comments WHERE id_author = ?";
-  return new Promise((resolve, reject) => {
-    poolmysql.query(queryString, [id_author], (err, result) => {
-      if (err) {
-        console.error("Error from userModel.js", { err });
-        reject(err);
-      }
-
-      console.log(`Getting comment by ${id_author}`, { result });
-
-      resolve(result[0]);
-    });
-  });
+const getCommentByIdAuthor = async (id_author) => {
+  const queryString = 'SELECT * FROM comments WHERE id_author = ?';
+  const values = [id_author];
+  const [rows] = await poolmysql.query(queryString, values);
+  return rows;
 };
 
-const createComment = ({ id_author, title, content, id_article, approved }) => {
+const createComment = async ({
+  id_author,
+  title,
+  content,
+  id_article,
+  approved,
+}) => {
   const query =
-    "INSERT INTO products (id_author, title, content, id_article, approved) VALUES (?, ?, ?, ?, ?)";
+    'INSERT INTO products (id_author, title, content, id_article, approved) VALUES (?, ?, ?, ?, ?)';
+  const values = [id_author, title, content, id_article, approved];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
+};
 
-  return new Promise((resolve, reject) => {
-    poolmysql.query(
-      query,
-      [id_author, title, content, id_article, approved],
-      (err, result, fields) => {
-        if (err) {
-          console.error("Error from userModel.js", { err });
-          return reject(err);
-        }
-        resolve(result.insertId);
-      }
-    );
-  });
+const deleteComment = async (id) => {
+  const query = 'DELETE FROM comments WHERE id = ?';
+  const values = [id];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
 };
 
 module.exports = {
   getCommentByIdAuthor,
   createComment,
+  deleteComment,
 };
