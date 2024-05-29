@@ -97,9 +97,32 @@ const deleteOrderItem = async (req, res) => {
   }
 };
 
+const getOrdersByUserId = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const query =
+      'SELECT orders.* FROM orders INNER JOIN users ON orders.id_user = users.id WHERE users.id =?';
+    const values = [userId];
+
+    const [rows] = await poolmysql.query(query, values);
+    if (rows.length > 0) {
+      res.json(rows);
+    } else {
+      res.status(404).json({
+        message: 'No se encontraron pedidos para el usuario especificado.',
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error obteniendo los pedidos');
+  }
+};
+
 module.exports = {
   createOrderItem,
   getOrderDetails,
   deleteOrderItem,
   updateOrderDetails,
+  getOrdersByUserId,
 };

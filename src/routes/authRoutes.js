@@ -5,10 +5,15 @@ const {
   verifyToken,
   updateProfile,
   deleteProfile,
-} = require('../controllers/users/authController');
+} = require('../controllers/users/usersController');
 
-const { registerProduct,getAllProducts, getProductsByIdCategory,searchProducts} = require('../controllers/products/authControllers')
-const { createOrderItem} = require('../controllers/orders/authControllers');
+const {
+  registerProduct,
+  getAllProducts,
+  getProductsByIdCategory,
+  searchProducts,
+} = require('../controllers/products/productsControllers');
+const { createOrderItem } = require('../controllers/orders/ordersControllers');
 
 const router = express.Router();
 
@@ -20,9 +25,8 @@ router.post('/verify-token', verifyToken);
 router.post('/register-product', registerProduct);
 router.post('/register-order', createOrderItem);
 router.get('/get-products', getAllProducts);
-router.get('/get-product-by-id-category', getProductsByIdCategory)
-router.get('/search-products/:name', searchProducts)
-
+router.get('/get-product-by-id-category', getProductsByIdCategory);
+router.get('/search-products/:name', searchProducts);
 
 // router.get('/products');
 // router.get('/products/:id');

@@ -1,14 +1,14 @@
 const { pool: poolmysql } = require('../../config/database');
 
 const getUserByEmail = async (email) => {
-  const query = "SELECT * FROM users WHERE email = ?"
-  const values = [email]
+  const query = 'SELECT * FROM users WHERE email = ?';
+  const values = [email];
   const [rows] = await poolmysql.query(query, values);
   return rows[0];
 };
 
 const getUserById = async (id) => {
-  const query = "SELECT * FROM users WHERE id = ?";
+  const query = 'SELECT * FROM users WHERE id = ?';
   const values = [id];
   const [rows] = await poolmysql.query(query, values);
   return rows[0];
@@ -26,9 +26,20 @@ const createUser = async ({
   rol_id,
 }) => {
   //before inserting
-  console.log("hashed_pass", password);
-  const query = 'INSERT INTO users (name, email, password, last_name, number, city, country, rol_id, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const values = [name, email, password, last_name, number, city, country, rol_id, address,];
+  console.log('hashed_pass', password);
+  const query =
+    'INSERT INTO users (name, email, password, last_name, number, city, country, rol_id, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const values = [
+    name,
+    email,
+    password,
+    last_name,
+    number,
+    city,
+    country,
+    rol_id,
+    address,
+  ];
   try {
     // Ejecuta la consulta usando el pool
     const [resp] = await poolmysql.query(query, values);
@@ -108,10 +119,19 @@ const deleteUser = (userId) => {
   });
 };
 
+const getOrdersByUserId = async (userId) => {
+  const query =
+    'SELECT orders.* FROM orders INNER JOIN users ON orders.id_user = users.id WHERE users.id =?';
+  const values = [userId];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
+};
+
 module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
   createUser,
-  getUserById
+  getUserById,
+  getOrdersByUserId,
 };
