@@ -136,7 +136,7 @@ const login = async (req, res) => {
     }
 
     // Generar token JWT
-    const token = jwt.sign({ id: user.id }, "my_secret", {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
@@ -154,9 +154,7 @@ const verifyToken = (req, res) => {
   const token = req.header('Authorization')?.split(' ')[1];
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ message: 'Token no proporcionado', valid: false });
+    return res.status(401).json({ message: 'Token no proporcionado', valid: false });
   }
 
   try {
@@ -174,9 +172,7 @@ const verifyToken = (req, res) => {
 
     // Check if instance of Error
     if (err instanceof Error) {
-      return res
-        .status(500)
-        .json({ message: 'Error en el servidor', valid: false });
+      return res.status(500).json({ message: 'Error en el servidor', valid: false });
     }
   }
 };
