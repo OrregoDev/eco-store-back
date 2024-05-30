@@ -22,8 +22,33 @@ const deleteOrder = async (id) => {
   return rows;
 };
 
+const updateOrder = ({
+  orderId,
+  id_user,
+  product_id,
+  payment_method,
+  address,
+}) => {
+  const query =
+    'UPDATE orders SET id_user =?, product_id =?, payment_method =?, address =? WHERE OrderID =?';
+  return new Promise((resolve, reject) => {
+    poolmysql.query(
+      query,
+      [id_user, product_id, payment_method, address, orderId],
+      (err, result) => {
+        if (err) {
+          console.error('Error from userModel.js', { err });
+          return reject(err);
+        }
+        resolve(result.affectedRows > 0);
+      }
+    );
+  });
+};
+
 module.exports = {
   createOrder,
   getOrderById,
+  updateOrder,
   deleteOrder,
 };
