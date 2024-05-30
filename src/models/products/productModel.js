@@ -1,41 +1,46 @@
-const { connection } = require('../../config/database');
+const { pool: poolmysql } = require('../../config/database');
 
-const getProductByName = (name) => {
+const getProductByName = async (name) => {
   const queryString = 'SELECT * FROM products WHERE name = ?';
-  return new Promise((resolve, reject) => {
-    connection.query(queryString, [name], (err, result) => {
-      if (err) {
-        console.error('Error from userModel.js', { err });
-        reject(err);
-      }
-
-      console.log(`Getting product email by ${name}`, { result });
-
-      resolve(result[0]);
-    });
-  });
+  const values = [name];
+  const [rows] = await poolmysql.query(queryString, values);
+  return rows;
 };
 
-const createProduct = ({ name, price, quantity, image, id_category }) => {
+const getProductByIdCategory = async (id_category) => {
+  const query = 'SELECT * FROM products WHERE id_category = ?';
+  const values = [id_category];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
+};
+
+const createProduct = async (name, price, quantity, image, id_category) => {
   const query =
     'INSERT INTO products (name, price, quantity, image, id_category) VALUES (?, ?, ?, ?, ?)';
+  const values = [name, price, quantity, image, id_category];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
+};
 
-  return new Promise((resolve, reject) => {
-    connection.query(
-      query,
-      [name, price, quantity, image, id_category],
-      (err, result, fields) => {
-        if (err) {
-          console.error('Error from userModel.js', { err });
-          return reject(err);
-        }
-        resolve(result.insertId);
-      }
-    );
-  });
+const updateProduct = async (name, price, quantity, image, id_category) => {
+  const query =
+    'UPDATE products SET name = ?, price = ?, quantity = ?, image = ?, id_category WHERE id = ?';
+  const values = [name, price, quantity, image, id_category];
+  const [rows] = await poolmysql.query(query, values);
+  return rows;
+};
+
+const searchProduct = async (name) => {
+  const queryString = 'SELECT * FROM products WHERE name LIKE ? LIMIT 3';
+  const values = [`%${name}%`];
+  const [rows] = await poolmysql.query(queryString, values);
+  return rows;
 };
 
 module.exports = {
   getProductByName,
   createProduct,
+  updateProduct,
+  getProductByIdCategory,
+  searchProduct,
 };
