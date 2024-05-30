@@ -31,7 +31,7 @@ const updateProduct = async (name, price, quantity, image, id_category) => {
 };
 
 const searchProduct = async (name) => {
-  const queryString = 'SELECT * FROM products WHERE name LIKE ?';
+  const queryString = 'SELECT * FROM products WHERE name LIKE ? LIMIT 3';
   const values = [`%${name}%`];
   const [rows] = await poolmysql.query(queryString, values);
   return rows;

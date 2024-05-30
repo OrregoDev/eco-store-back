@@ -1,17 +1,9 @@
-const { createArticle } = require("../../models/blog_articles");
+const { createArticle } = require("../../models/blog_articles/articleModel");
 
-const register_order = async (req, res) => {
+const register_Article = async (req, res) => {
   try {
-    const { id_user, product_id, payment_method, address } = req.body; // Extrae los nuevos campos
-
-    
-      
-    const newOrderId = await createArticle({
-      id_user,
-      product_id,
-      payment_method,
-      address,
-    }); // Pasa los nuevos campos al método createUser
+    const { id_author, title, summary, content } = req.body; // Extrae los nuevos campos
+    const newOrderId = await createArticle({id_author, title, summary, content}); // Pasa los nuevos campos al método createUser
     res.status(201).json({
       message: `Order registered successfully with id: ${newOrderId}`,
     });
@@ -22,5 +14,5 @@ const register_order = async (req, res) => {
 };
 
 module.exports = {
-  register_order,
+  register_Article,
 };

@@ -14,6 +14,7 @@ const {
   searchProducts,
 } = require('../controllers/products/productsControllers');
 const { createOrderItem } = require('../controllers/orders/ordersControllers');
+const { register_Article } = require('../controllers/blog_articles/articlesControllers');
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.post('/register-order', createOrderItem);
 router.get('/get-products', getAllProducts);
 router.get('/get-product-by-id-category', getProductsByIdCategory);
 router.get('/search-products/:name', searchProducts);
+router.post('/register-artlicles', register_Article)
 
 // router.get('/products');
 // router.get('/products/:id');

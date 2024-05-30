@@ -30,8 +30,5 @@ const deleteArticle = async (id) => {
 };
 
 module.exports = {
-  getArticleByTitle,
   createArticle,
-  getArticleById,
-  deleteArticle,
 };
